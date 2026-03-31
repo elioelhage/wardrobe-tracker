@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+  <title>Wardrobe Tracker</title>
+  <link rel="icon" type="image/svg+xml" href="wardrobe.png">
+  <link rel="manifest" href="manifest.json">
+  <link rel="stylesheet" href="styles.css">
+  <meta name="theme-color" content="#3b82f6">
+</head>
+<body>
+  <div id="authContainer" class="auth-container">
+    <div class="auth-box">
+      <div class="auth-header">
+        <h2>Wardrobe Tracker</h2>
+        <p>Developed by Elio El Hage.</p>
+      </div>
+      <div class="input-group">
+        <input type="email" id="emailInput" placeholder="Email Address">
+        <input type="password" id="passwordInput" placeholder="Password (min 6 chars)">
+      </div>
+      <div class="auth-actions">
+        <button id="loginBtn" class="btn-primary">Log In</button>
+        <button id="signupBtn" class="btn-secondary">Sign Up</button>
+      </div>
+      <p id="authMessage" class="auth-message"></p>
+    </div>
+  </div>
+
+  <div class="container" id="appContainer" style="display: none;">
+    <div class="wardrobe-sidebar">
+      <div class="header-flex">
+        <div class="brand-group">
+          <div class="brand">
+            <img src="wardrobe.png" alt="Logo" class="brand-logo">
+            <h2>Wardrobe</h2>
+          </div>
+          <div class="brand-subtitle">Made by Elio El Hage</div>
+        </div>
+        <div class="actions-toolbar">
+          <button id="searchToggleBtn" class="icon-btn" title="Search">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+          </button>
+          <button id="analyticsBtn" class="icon-btn" title="Analytics">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+          </button>
+          <button id="themeToggleBtn" class="icon-btn" title="Toggle Theme">
+            <svg id="themeIcon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+            </svg>
+          </button>
+          <button id="logoutBtn" class="icon-btn text-danger" title="Log Out">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+          </button>
+        </div>
+      </div>
+
+      <div class="search-collapse" id="searchCollapse">
+        <input type="text" id="searchInput" placeholder="Search your items...">
+      </div>
+
+      <div class="tabs-toolbar">
+        <div class="category-tabs" id="categoryTabs"></div>
+        <button id="categoryToggleBtn" class="btn-filter tabs-toggle">Show All</button>
+      </div>
+      <div id="categoryDrawer" class="category-drawer"></div>
+
+      <div class="list-header" id="listHeader" style="display: none;">
+        <span id="itemCount" class="item-count">0 items</span>
+        <button id="toggleFilterBtn" class="btn-filter">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon></svg>
+          Filter & Sort
+        </button>
+      </div>
+
+      <div id="filterSortPanel" class="filter-sort-panel">
+        <div class="sort-section">
+          <label>Sort by:</label>
+          <select id="sortSelect" class="small-select">
+            <option value="ratingDesc">Rating (S to D)</option>
+            <option value="ratingAsc">Rating (D to S)</option>
+            <option value="nameAsc">Name (A to Z)</option>
+          </select>
+        </div>
+        <div class="filter-group">
+            <div class="color-filter-section" id="colorFilterSection" style="display: none;">
+                <label>Filter by Color:</label>
+                <div id="colorChipContainer" class="color-chips"></div>
+            </div>
+            <div class="color-filter-section" id="fitFilterSection" style="display: none; margin-top: 15px;">
+                <label>Filter by Fit:</label>
+                <div id="fitChipContainer" class="color-chips"></div>
+            </div>
+            <div class="color-filter-section" id="typeFilterSection" style="display: none; margin-top: 15px;">
+                <label>Filter by Type:</label>
+                <div id="typeChipContainer" class="color-chips"></div>
+            </div>
+        </div>
+      </div>
+
+      <ul id="shirtList"></ul>
+
+      <button id="openModalBtn" class="fab-add" title="Add New Item"></button>
+    </div>
+
+    <div class="shirt-detail" id="shirtDetail">
+      <div class="empty-state">
+        <p>Select an item from your wardrobe to view its details</p>
+      </div>
+    </div>
+  </div>
+
+  <div id="analyticsModal" class="modal-overlay">
+    <div class="modal-content analytics-content">
+      <div class="modal-header">
+        <h3>Wardrobe Analytics</h3>
+        <button id="closeAnalyticsBtn" class="close-btn">&times;</button>
+      </div>
+      <div id="analyticsStats" class="analytics-stats"></div>
+    </div>
+  </div>
+
+  <div id="formModal" class="modal-overlay">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 id="formTitle">Add a New Item</h3>
+        <button id="closeModalBtn" class="close-btn">&times;</button>
+      </div>
+      
+      <select id="itemCategorySelect" class="full-width-select" style="margin-bottom: 15px;">
+        <option value="Shirts">Shirts</option>
+        <option value="Hoodies">Hoodies</option>
+        <option value="Pants">Pants</option>
+        <option value="Shoes">Shoes</option>
+        <option value="Jackets">Jackets</option>
+      </select>
+
+      <input type="text" id="shirtName" placeholder="Item Name (Optional)">
+      
+      <div class="image-upload-wrapper">
+        <label for="shirtImage" class="custom-file-upload">
+          <span id="uploadText">📁 Choose Image (Required)</span>
+          <input type="file" id="shirtImage" accept="image/*" class="hidden-input">
+        </label>
+        <div id="imagePreviewContainer" style="display: none; text-align: center; margin-bottom: 15px;">
+          <img id="imagePreview" src="" alt="Preview" style="max-width: 120px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+        </div>
+      </div>
+
+      <div class="slider-wrapper">
+        <div class="slider-header">
+          <span style="font-weight: 600;">Rating (Required)</span>
+          <div id="ratingBadgePreview" class="rating-badge rating-B" style="min-width: 40px; height: 40px; font-size: 16px; margin: 0;">B</div>
+        </div>
+        <input type="range" id="ratingSlider" class="styled-slider" min="0" max="10" step="1" value="5">
+        <div class="slider-labels">
+          <span>D</span>
+          <span>C</span>
+          <span>B</span>
+          <span>A</span>
+          <span>S</span>
+        </div>
+      </div>
+
+      <div id="dynamicFieldGroup"></div>
+
+      <select id="shirtColor" class="full-width-select optional-input">
+        <option value="" selected>Color (Optional)...</option>
+        <option value="Black">Black</option>
+        <option value="White">White</option>
+        <option value="Gray">Gray</option>
+        <option value="Navy">Navy</option>
+        <option value="Blue">Blue</option>
+        <option value="Light Blue">Light Blue</option>
+        <option value="Red">Red</option>
+        <option value="Green">Green</option>
+        <option value="Olive">Olive / Khaki</option>
+        <option value="Yellow">Yellow</option>
+        <option value="Orange">Orange</option>
+        <option value="Purple">Purple</option>
+        <option value="Pink">Pink</option>
+        <option value="Brown">Brown</option>
+        <option value="Beige">Beige / Cream</option>
+        <option value="Multicolor">Multicolor / Pattern</option>
+      </select>
+
+      <button id="addShirtBtn" class="btn-primary">Save Item</button>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/color-thief/2.3.0/color-thief.umd.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

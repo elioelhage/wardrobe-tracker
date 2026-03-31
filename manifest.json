@@ -1,0 +1,16 @@
+{
+  "name": "Wardrobe Tracker",
+  "short_name": "Wardrobe",
+  "description": "Track your clothing collection",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#3b82f6",
+  "icons": [
+    {
+      "src": "wardrobe.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    }
+  ]
+}
